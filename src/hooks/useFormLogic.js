@@ -14,12 +14,20 @@ export const useFormLogic = () => {
     fecha_nacimiento: '',
     intereses: [],
     nivel_experiencia: '',
+    tipo_suscripcion: '',
+    metodo_pago: '',
+    frecuencia_uso: '',
+    idioma_preferido: '',
     
     // Campos específicos de Admin
     departamento: '',
     nivel_acceso: '',
     certificaciones: '',
     experiencia_gestion: '',
+    area_especializacion: '',
+    tipo_gestion: '',
+    herramientas_admin: [],
+    horario_trabajo: '',
     
     // Campos adicionales
     comentarios: '',
@@ -52,6 +60,15 @@ export const useFormLogic = () => {
     }))
   }
 
+  const handleHerramientasChange = (herramienta) => {
+    setFormData(prev => ({
+      ...prev,
+      herramientas_admin: prev.herramientas_admin.includes(herramienta)
+        ? prev.herramientas_admin.filter(h => h !== herramienta)
+        : [...prev.herramientas_admin, herramienta]
+    }))
+  }
+
   const validateForm = () => {
     const newErrors = {}
     
@@ -66,6 +83,10 @@ export const useFormLogic = () => {
     if (formData.userType === 'user') {
       if (!formData.nivel_experiencia) newErrors.nivel_experiencia = 'Selecciona tu nivel de experiencia'
       if (formData.intereses.length === 0) newErrors.intereses = 'Selecciona al menos un interés'
+      if (!formData.tipo_suscripcion) newErrors.tipo_suscripcion = 'Selecciona el tipo de suscripción'
+      if (formData.tipo_suscripcion === 'premium' && !formData.metodo_pago) {
+        newErrors.metodo_pago = 'Selecciona un método de pago para la suscripción premium'
+      }
     }
     
     // Validaciones específicas de Admin
@@ -73,6 +94,10 @@ export const useFormLogic = () => {
       if (!formData.departamento) newErrors.departamento = 'Selecciona tu departamento'
       if (!formData.nivel_acceso) newErrors.nivel_acceso = 'Selecciona el nivel de acceso'
       if (!formData.experiencia_gestion) newErrors.experiencia_gestion = 'Selecciona tu experiencia en gestión'
+      if (!formData.area_especializacion) newErrors.area_especializacion = 'Selecciona tu área de especialización'
+      if (formData.area_especializacion === 'tecnologia' && formData.herramientas_admin.length === 0) {
+        newErrors.herramientas_admin = 'Selecciona al menos una herramienta tecnológica'
+      }
     }
     
     if (!formData.terminos) newErrors.terminos = 'Debes aceptar los términos y condiciones'
@@ -99,6 +124,7 @@ export const useFormLogic = () => {
     isSubmitting,
     handleInputChange,
     handleInteresesChange,
+    handleHerramientasChange,
     handleSubmit
   }
 }

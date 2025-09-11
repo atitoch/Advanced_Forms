@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AdminFields = ({ formData, handleInputChange, errors }) => {
+const AdminFields = ({ formData, handleInputChange, onHerramientasChange, errors }) => {
   if (formData.userType !== 'admin') return null
 
   return (
@@ -95,6 +95,127 @@ const AdminFields = ({ formData, handleInputChange, errors }) => {
         {errors.experiencia_gestion && (
           <p className="text-red-400 text-sm mt-2">{errors.experiencia_gestion}</p>
         )}
+      </div>
+
+      {/* Área de Especialización */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Área de Especialización *
+        </label>
+        <select
+          name="area_especializacion"
+          value={formData.area_especializacion}
+          onChange={handleInputChange}
+          className={`w-full px-4 py-3 bg-white/10 border backdrop-blur-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300 text-white hover:border-gray-500 ${
+            errors.area_especializacion ? 'border-red-400 focus:ring-red-400' : 'border-gray-600'
+          }`}
+        >
+          <option value="" className="bg-gray-800 text-gray-300">Selecciona tu especialización</option>
+          <option value="tecnologia" className="bg-gray-800 text-white">💻 Tecnología e Innovación</option>
+          <option value="personas" className="bg-gray-800 text-white">👥 Gestión de Personas</option>
+          <option value="proyectos" className="bg-gray-800 text-white">📋 Gestión de Proyectos</option>
+          <option value="finanzas" className="bg-gray-800 text-white">💰 Finanzas y Presupuestos</option>
+          <option value="operaciones" className="bg-gray-800 text-white">⚙️ Operaciones y Procesos</option>
+          <option value="estrategia" className="bg-gray-800 text-white">🎯 Estrategia Empresarial</option>
+        </select>
+        {errors.area_especializacion && (
+          <p className="text-red-400 text-sm mt-2">{errors.area_especializacion}</p>
+        )}
+      </div>
+
+      {/* Campos condicionales basados en área de especialización */}
+      {formData.area_especializacion === 'tecnologia' && (
+        <div className="space-y-4 bg-gradient-to-r from-cyan-500/10 to-cyan-600/10 border border-cyan-400/20 rounded-lg p-6">
+          <h4 className="text-cyan-300 font-semibold flex items-center">
+            <span className="mr-2">💻</span>
+            Herramientas Tecnológicas
+          </h4>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-3">
+              Herramientas que manejas *
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {[
+                { value: 'docker', label: 'Docker', icon: '🐳' },
+                { value: 'kubernetes', label: 'Kubernetes', icon: '☸️' },
+                { value: 'aws', label: 'AWS', icon: '☁️' },
+                { value: 'azure', label: 'Azure', icon: '🔷' },
+                { value: 'jenkins', label: 'Jenkins', icon: '🔄' },
+                { value: 'terraform', label: 'Terraform', icon: '🏗️' }
+              ].map((herramienta) => (
+                <label key={herramienta.value} className={`flex items-center p-3 border backdrop-blur-sm rounded-lg cursor-pointer transition-all duration-300 ${
+                  formData.herramientas_admin?.includes(herramienta.value)
+                    ? 'border-cyan-400 bg-cyan-500/20' 
+                    : 'border-gray-600 bg-white/5 hover:border-gray-500'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={formData.herramientas_admin?.includes(herramienta.value) || false}
+                    onChange={() => onHerramientasChange(herramienta.value)}
+                    className="sr-only"
+                  />
+                  <span className="text-lg mr-2">{herramienta.icon}</span>
+                  <span className={`text-sm font-medium ${
+                    formData.herramientas_admin?.includes(herramienta.value) ? 'text-cyan-300' : 'text-gray-300'
+                  }`}>
+                    {herramienta.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+            {errors.herramientas_admin && (
+              <p className="text-red-400 text-sm mt-2">{errors.herramientas_admin}</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {formData.area_especializacion === 'personas' && (
+        <div className="space-y-4 bg-gradient-to-r from-green-500/10 to-green-600/10 border border-green-400/20 rounded-lg p-6">
+          <h4 className="text-green-300 font-semibold flex items-center">
+            <span className="mr-2">👥</span>
+            Gestión de Equipos
+          </h4>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Tipo de Gestión
+            </label>
+            <select
+              name="tipo_gestion"
+              value={formData.tipo_gestion}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-white/10 border border-gray-600 backdrop-blur-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-300 text-white hover:border-gray-500"
+            >
+              <option value="" className="bg-gray-800 text-gray-300">Tipo de gestión de personas</option>
+              <option value="equipos_pequenos" className="bg-gray-800 text-white">👥 Equipos pequeños (2-5 personas)</option>
+              <option value="equipos_medianos" className="bg-gray-800 text-white">👨‍👩‍👧‍👦 Equipos medianos (6-15 personas)</option>
+              <option value="equipos_grandes" className="bg-gray-800 text-white">🏢 Equipos grandes (16+ personas)</option>
+              <option value="multiples_equipos" className="bg-gray-800 text-white">🌐 Múltiples equipos</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* Horario de trabajo */}
+      <div>
+        <label className="block text-sm font-medium text-gray-300 mb-2">
+          Horario de Trabajo Preferido
+        </label>
+        <select
+          name="horario_trabajo"
+          value={formData.horario_trabajo}
+          onChange={handleInputChange}
+          className="w-full px-4 py-3 bg-white/10 border border-gray-600 backdrop-blur-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300 text-white hover:border-gray-500"
+        >
+          <option value="" className="bg-gray-800 text-gray-300">Selecciona tu horario preferido</option>
+          <option value="matutino" className="bg-gray-800 text-white">🌅 Matutino (6:00 - 14:00)</option>
+          <option value="diurno" className="bg-gray-800 text-white">☀️ Diurno (8:00 - 17:00)</option>
+          <option value="vespertino" className="bg-gray-800 text-white">🌆 Vespertino (14:00 - 22:00)</option>
+          <option value="nocturno" className="bg-gray-800 text-white">🌙 Nocturno (22:00 - 6:00)</option>
+          <option value="flexible" className="bg-gray-800 text-white">🔄 Flexible</option>
+        </select>
       </div>
     </div>
   )

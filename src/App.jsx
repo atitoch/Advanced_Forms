@@ -18,6 +18,7 @@ function App() {
     isSubmitting,
     handleInputChange,
     handleInteresesChange,
+    handleHerramientasChange,
     handleSubmit
   } = useFormLogic()
 
@@ -57,7 +58,7 @@ function App() {
                     <CommonFields 
                       formData={formData}
                       errors={errors}
-                      onChange={handleInputChange}
+                      handleInputChange={handleInputChange}
                     />
 
                     {/* Campos específicos del tipo de usuario */}
@@ -65,8 +66,8 @@ function App() {
                       <UserFields 
                         formData={formData}
                         errors={errors}
-                        onChange={handleInputChange}
-                        onInteresesChange={handleInteresesChange}
+                        handleInputChange={handleInputChange}
+                        handleInteresesChange={handleInteresesChange}
                       />
                     )}
 
@@ -74,7 +75,8 @@ function App() {
                       <AdminFields 
                         formData={formData}
                         errors={errors}
-                        onChange={handleInputChange}
+                        handleInputChange={handleInputChange}
+                        onHerramientasChange={handleHerramientasChange}
                       />
                     )}
 
