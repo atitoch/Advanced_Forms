@@ -3,21 +3,34 @@ import { createClient } from '@supabase/supabase-js'
 // Servicio para manejar las conexiones con Supabase
 class ApiService {
   constructor() {
-    // Configuración de Supabase
-    this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-    this.supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-    
-    if (!this.supabaseUrl || !this.supabaseKey) {
-      console.error('❌ Variables de entorno de Supabase faltantes')
-      throw new Error('Variables de entorno de Supabase no configuradas')
-    }
+    // Configuración de Supabase - acceso seguro a variables de entorno
+    try {
+      this.supabaseUrl = import.meta.env?.VITE_SUPABASE_URL
+      this.supabaseKey = import.meta.env?.VITE_SUPABASE_ANON_KEY
+      this.tableName = import.meta.env?.VITE_SUPABASE_TABLE || 'form_submissions'
+      
+      if (!this.supabaseUrl || !this.supabaseKey) {
+        console.warn('⚠️ Variables de entorno de Supabase no disponibles')
+        this.supabase = null
+        this.isConfigured = false
+        return
+      }
 
-    this.supabase = createClient(this.supabaseUrl, this.supabaseKey)
-    this.tableName = import.meta.env.VITE_SUPABASE_TABLE || 'form_submissions'
+      this.supabase = createClient(this.supabaseUrl, this.supabaseKey)
+      this.isConfigured = true
+    } catch (error) {
+      console.error('Error inicializando ApiService:', error)
+      this.supabase = null
+      this.isConfigured = false
+    }
   }
 
   // Verificar conexión con Supabase
   async checkConnection() {
+    if (!this.isConfigured || !this.supabase) {
+      throw new Error('Supabase no está configurado')
+    }
+    
     try {
       const { error } = await this.supabase
         .from(this.tableName)
@@ -60,6 +73,10 @@ class ApiService {
 
   // Método para enviar datos del formulario a Supabase
   async submitForm(formData) {
+    if (!this.isConfigured || !this.supabase) {
+      throw new Error('Supabase no está configurado. Verifique las variables de entorno.')
+    }
+    
     try {
       // Mapear campos de camelCase a snake_case para Supabase
       const supabaseData = {
@@ -128,6 +145,10 @@ class ApiService {
 
   // Método para obtener todos los formularios enviados (opcional)
   async getFormSubmissions() {
+    if (!this.isConfigured || !this.supabase) {
+      throw new Error('Supabase no está configurado. Verifique las variables de entorno.')
+    }
+    
     try {
       const { data, error } = await this.supabase
         .from(this.tableName)
@@ -149,6 +170,10 @@ class ApiService {
 
   // Método para obtener formularios por tipo de usuario
   async getFormSubmissionsByType(userType) {
+    if (!this.isConfigured || !this.supabase) {
+      throw new Error('Supabase no está configurado. Verifique las variables de entorno.')
+    }
+    
     try {
       const { data, error } = await this.supabase
         .from(this.tableName)
@@ -171,6 +196,10 @@ class ApiService {
 
   // Método para validar email único (opcional)
   async validateEmailUnique(email) {
+    if (!this.isConfigured || !this.supabase) {
+      throw new Error('Supabase no está configurado. Verifique las variables de entorno.')
+    }
+    
     try {
       const { data, error } = await this.supabase
         .from(this.tableName)
